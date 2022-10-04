@@ -1,0 +1,22 @@
+{
+  "name": "cloud",
+  "version": "1.0.0",
+  "description": "Cloud Run Hosting Demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm .",
+    "deploy": "deploy",
+    "build": "gcloud run deploy scrbbl --allow-unauthenticated --source=.",
+    "start": "node index"
+  },
+  "keywords": [
+    "Whiteboard",
+    "Scribble"
+  ],
+  "dependencies": {
+    "express": "~4.17.1",
+    "socket.io": "^4.0.0"
+  },
+  "author": "Dev Lucem",
+  "license": "ISC"
+}
