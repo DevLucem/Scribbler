@@ -1,9 +1,7 @@
 # Svelte + Cloud Run WebSockets
 ### [Group Scribbler Demo](https://scrbbl-5tq4v2vhga-de.a.run.app/)
 
-// todo show the image here
-![image](https://user-images.githubusercontent.com/22216995/193905040-45fa6e1e-ebd2-4b89-96b8-7781966e55e0.png)
-
+<img src="https://user-images.githubusercontent.com/22216995/193905040-45fa6e1e-ebd2-4b89-96b8-7781966e55e0.png" alt="drawing" height="250"/>
 
 #### A clone of [PWA](https://pwa-progressive.web.app) Starter Template
 ##### ...with all the good stuff
