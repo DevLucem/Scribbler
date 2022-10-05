@@ -41,9 +41,6 @@ function onConnection(socket) {
         console.log("Disconnected Client, all Clients are", clients.length);
     });
 
-    socket.on(socket => {
-        console.log('damn')
-    })
 }
 
 io.on('connection', onConnection);
