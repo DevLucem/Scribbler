@@ -13,7 +13,7 @@
     const sendMessage = () => {
         if (message.length>0) {
             messages.push({user: 'Me', message: message})
-            dispatch('message', message)
+            dispatch('message', {message: message})
             message = "";
             messages = messages;
         }
@@ -37,7 +37,7 @@
 
     <ul class="bg-white p-2 max-h-72 overflow-auto" bind:this={scroll}>
         {#each messages as message}
-            <li class="bg-fade rounded p-1 m-2">{message.user.substr(0, 5)}: {message.message}</li>
+            <li class="bg-fade rounded p-1 m-2">{message?.user}: {message.message}</li>
         {/each}
     </ul>
 

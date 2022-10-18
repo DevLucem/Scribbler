@@ -11,38 +11,48 @@
   import "./lib/Tailwind.svelte"
   import "./style.css"
 
-  import io from 'socket.io-client'
-
-  const socket = io()
-  const sendEvent = (eventName, data) => socket.emit(eventName, data)
+  let ws;
+  const sendEvent = (event, data) => ws.send(JSON.stringify({event: event, data: data}))
 
   let onDrawingEvent;
-  socket.on('drawing', e => onDrawingEvent(e));
-
   let newMessage;
-  socket.on('message', e => newMessage(e))
 
+  const connect = () => {
 
-  let scrollable = false;
-  const wheel = (node, options) => {
-    let { scrollable } = options;
-    const handler = e => {
-      if (!scrollable) e.preventDefault();
-    };
-    node.addEventListener('wheel', handler, { passive: false });
-    return {
-      update(options) {
-        scrollable = options.scrollable;
-      },
-      destroy() {
-        node.removeEventListener('wheel', handler, { passive: false });
+    ws = new WebSocket((location.protocol === 'https:'? 'wss://': 'ws://')+ location.host);
+
+    ws.onopen = res => {
+
+      console.log('Successfully Connected To Server Socket')
+      ws.onmessage = message => {
+
+        const data = JSON.parse(message.data)
+
+        if (data.event && data.event === 'drawing')
+          onDrawingEvent(data.data)
+
+        if (data.event && data.event === 'message')
+          newMessage(data.data)
+
+      };
+
+      ws.onclose = () => {
+        console.log('Retrying Connection');
+        connect();
       }
+
     };
-  };
+
+    ws.onerror = error => {
+      console.error('Failed to connect. Retrying in 3 seconds', error)
+      setTimeout(connect, 3000)
+    }
+
+  }
+  connect();
 
 </script>
 
-<svelte:window use:wheel={{scrollable}} />
 
 <main class="flex flex-col h-screen w-screen bg-fade relative">
 

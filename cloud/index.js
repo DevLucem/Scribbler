@@ -1,49 +1,35 @@
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http,  {
-    /**
-     * @param cors - please disable for security
-     * Good for testing locally and making remote connections from different places
-     */
-    cors: {
-        origin: '*',
-    }
-});
+const ws = require('express-ws')(app);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.use(express.static(__dirname + '/public'));
+app.use(cors({
+    origin: '*'
+}));
 
-const clients = [];
-function onConnection(socket) {
-    clients.push(socket);
+app.ws('/', socket => {
 
-    socket.emit("Damn this is all I have got")
-    console.log('New Client', socket.id, "all Clients are ", clients.length);
-    socket.on('drawing', (data) => {
-        clients.forEach(client => {
+    const clients = () => {return Array.from(ws.getWss().clients)};
+    socket.id = Math.random().toString(36).slice(2, 7);
+    console.log("New Client Connection all clients", clients.length);
+
+    socket.on('message', data => {
+        let message =  JSON.parse(data.toString());
+        message.data.user = socket.id;
+        clients().forEach(client => {
             if (client.id !== socket.id)
-                client.emit('drawing', data)
+                client.send(JSON.stringify(message))
         })
     });
 
-    socket.on('message', message => {
-        clients.forEach(client => {
-            if (client.id !== socket.id)
-                client.emit('message', { user: socket.id, message: message })
-        })
-    });
+    socket.on("close", event => {
+        console.log(socket.id, 'Disconnected')
+    })
 
-    socket.on('disconnect', socket => {
-        clients.pop(socket);
-        console.log("Disconnected Client, all Clients are", clients.length);
-    });
+});
 
-}
-
-io.on('connection', onConnection);
-io.on('disconnect', socket => console.log('Disconnect Server', socket.id));
-// io.listen(port) // for local testing
-http.listen(port, () => console.log('listening on port ' + port));
+app.listen(port, () => console.error('listening on http://localhost:3001/'));

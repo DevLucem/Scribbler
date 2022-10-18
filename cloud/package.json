@@ -14,8 +14,9 @@
     "Scribble"
   ],
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "~4.17.1",
-    "socket.io": "^4.0.0"
+    "express-ws": "^5.0.2"
   },
   "author": "Dev Lucem",
   "license": "ISC"
